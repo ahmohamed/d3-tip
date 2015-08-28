@@ -25,7 +25,9 @@
   return function() {
     var direction = d3_tip_direction,
         offset    = d3_tip_offset,
+        bootstrap = false,
         html      = d3_tip_html,
+        text      = d3_tip_text,
         node      = initNode(),
         svg       = null,
         point     = null,
@@ -54,7 +56,7 @@
           scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft
 
       nodel.html(content)
-        .style({ opacity: 1, 'pointer-events': 'all' })
+        .style({ opacity: 1, 'pointer-events': 'none' })
 
       while(i--) nodel.classed(directions[i], false)
       coords = direction_callbacks.get(dir).apply(this)
@@ -146,6 +148,24 @@
       return tip
     }
 
+    // Public: sets or gets the text value of the tooltip
+    //
+    // v - String value of the tip
+    //
+    // Returns text value or tip
+    tip.text = function(v) {
+      if (!arguments.length) return text
+      text = v == null ? v : d3.functor(v)
+
+      return tip
+    }
+
+    tip.bootstrap = function(v) {
+      if (!arguments.length) return bootstrap
+      text = v == null ? v : d3.functor(v)
+
+      return tip
+    }
     // Public: destroys the tooltip and removes it from the DOM
     //
     // Returns a tip
@@ -159,7 +179,8 @@
 
     function d3_tip_direction() { return 'n' }
     function d3_tip_offset() { return [0, 0] }
-    function d3_tip_html() { return ' ' }
+    function d3_tip_html() { return false }
+    function d3_tip_text() { return '' }
 
     var direction_callbacks = d3.map({
       n:  direction_n,
