@@ -170,9 +170,10 @@
       if (!arguments.length) return bootstrap
       bootstrap = v;
       if(v == true){
+        var nodel = getNodeEl()
         nodel.html('<div class="tooltip-arrow"></div><div class="tooltip-inner">'
           + text +'</div>')
-        textnode = nodel.select('tooltip-inner')
+        textnode = nodel.select('.tooltip-inner')
       }
       
       return tip
