@@ -25,9 +25,10 @@
   return function() {
     var direction = d3_tip_direction,
         offset    = d3_tip_offset,
-        bootstrap = false,
         html      = d3_tip_html,
-        text      = d3_tip_text,
+        text      = ' ',
+        textnode  = null,
+        bootstrap = false,
         node      = initNode(),
         svg       = null,
         point     = null,
@@ -54,10 +55,15 @@
           coords,
           scrollTop  = document.documentElement.scrollTop || document.body.scrollTop,
           scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft
-
-      nodel.html(content)
-        .style({ opacity: 1, 'pointer-events': 'none' })
-
+      
+      if(!bootstrap)
+        nodel.html(content)
+          .style({ opacity: 1, 'pointer-events': 'all' })
+      else{
+        textnode.text(text)
+        nodel.style({ opacity: 1, 'pointer-events': 'none' })
+      }
+      
       while(i--) nodel.classed(directions[i], false)
       coords = direction_callbacks.get(dir).apply(this)
       nodel.classed(dir, true).style({
@@ -155,15 +161,20 @@
     // Returns text value or tip
     tip.text = function(v) {
       if (!arguments.length) return text
-      text = v == null ? v : d3.functor(v)
-
+      text = v == null ? ' ' : v
+      
       return tip
     }
 
     tip.bootstrap = function(v) {
       if (!arguments.length) return bootstrap
-      text = v == null ? v : d3.functor(v)
-
+      bootstrap = v;
+      if(v == true){
+        nodel.html('<div class="tooltip-arrow"></div><div class="tooltip-inner">'
+          + text +'</div>')
+        textnode = nodel.select('tooltip-inner')
+      }
+      
       return tip
     }
     // Public: destroys the tooltip and removes it from the DOM
@@ -179,8 +190,7 @@
 
     function d3_tip_direction() { return 'n' }
     function d3_tip_offset() { return [0, 0] }
-    function d3_tip_html() { return false }
-    function d3_tip_text() { return '' }
+    function d3_tip_html() { return ' ' }
 
     var direction_callbacks = d3.map({
       n:  direction_n,
